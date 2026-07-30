@@ -1,0 +1,17 @@
+{
+  "name": "@pv/indexer",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/worker.js",
+    "start": "node src/worker.js"
+  },
+  "dependencies": {
+    "@pv/shared": "*",
+    "dotenv": "^16.6.1",
+    "ethers": "^6.17.0",
+    "pg": "^8.16.3",
+    "pino": "^9.7.0"
+  }
+}

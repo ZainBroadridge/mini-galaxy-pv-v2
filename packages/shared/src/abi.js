@@ -1,0 +1,61 @@
+export const VOTE_EVENT_ABI = [
+  {
+    type: 'constructor',
+    inputs: [
+      { name: 'creator_', type: 'address' },
+      { name: 'tokenAddress_', type: 'address' },
+      { name: 'snapshotBlock_', type: 'uint64' },
+      { name: 'snapshotRoot_', type: 'bytes32' },
+      { name: 'votingStart_', type: 'uint64' },
+      { name: 'votingEnd_', type: 'uint64' },
+      { name: 'voteUnit_', type: 'uint256' },
+      { name: 'metadataHash_', type: 'bytes32' },
+      { name: 'proposalConfig_', type: 'uint256' },
+    ],
+  },
+  { type: 'function', name: 'creator', stateMutability: 'view', inputs: [], outputs: [{ type: 'address' }] },
+  { type: 'function', name: 'tokenAddress', stateMutability: 'view', inputs: [], outputs: [{ type: 'address' }] },
+  { type: 'function', name: 'snapshotBlock', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint64' }] },
+  { type: 'function', name: 'snapshotRoot', stateMutability: 'view', inputs: [], outputs: [{ type: 'bytes32' }] },
+  { type: 'function', name: 'votingStart', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint64' }] },
+  { type: 'function', name: 'votingEnd', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint64' }] },
+  { type: 'function', name: 'voteUnit', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
+  { type: 'function', name: 'metadataHash', stateMutability: 'view', inputs: [], outputs: [{ type: 'bytes32' }] },
+  { type: 'function', name: 'proposalConfig', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
+  { type: 'function', name: 'hasVoted', stateMutability: 'view', inputs: [{ name: 'voter', type: 'address' }], outputs: [{ type: 'bool' }] },
+  { type: 'function', name: 'proposalCount', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint8' }] },
+  { type: 'function', name: 'optionCount', stateMutability: 'view', inputs: [{ name: 'proposalIndex', type: 'uint256' }], outputs: [{ type: 'uint8' }] },
+  { type: 'function', name: 'getProposalTallies', stateMutability: 'view', inputs: [{ name: 'proposalIndex', type: 'uint256' }], outputs: [{ type: 'uint256[]' }] },
+  {
+    type: 'function',
+    name: 'castVote',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'voter', type: 'address' },
+      { name: 'snapshotBalance', type: 'uint256' },
+      { name: 'proof', type: 'bytes32[]' },
+      { name: 'choices', type: 'bytes' },
+      { name: 'signature', type: 'bytes' },
+    ],
+    outputs: [],
+  },
+  {
+    type: 'event',
+    name: 'VoteCast',
+    anonymous: false,
+    inputs: [
+      { name: 'voter', type: 'address', indexed: true },
+      { name: 'votingPower', type: 'uint256', indexed: false },
+      { name: 'choices', type: 'bytes', indexed: false },
+    ],
+  },
+];
+
+export const STANDARD_ERC20_ABI = [
+  'function name() view returns (string)',
+  'function symbol() view returns (string)',
+  'function decimals() view returns (uint8)',
+  'function totalSupply() view returns (uint256)',
+  'function balanceOf(address) view returns (uint256)',
+  'event Transfer(address indexed from,address indexed to,uint256 value)',
+];

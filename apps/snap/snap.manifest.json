@@ -1,0 +1,34 @@
+{
+  "version": "0.1.0",
+  "description": "Verified proxy-voting notices delivered through the Mini Galaxy PV dApp.",
+  "proposedName": "PV Investor Communications",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/REPLACE_ME/mini-galaxy-pv-v2.git"
+  },
+  "source": {
+    "shasum": "lr91tUuCPl+LmsWPJNECrfACV3yTU6nBg/o6cEu5Rs4=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@pv/snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialConnections": {
+    "http://localhost:5173": {}
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true,
+      "snaps": false,
+      "allowedOrigins": ["http://localhost:5173"]
+    },
+    "snap_manageState": {},
+    "snap_notify": {},
+    "endowment:page-home": {}
+  },
+  "platformVersion": "6.24.0",
+  "manifestVersion": "0.1"
+}

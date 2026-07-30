@@ -1,0 +1,41 @@
+{
+  "name": "mini-galaxy-pv-v2",
+  "version": "2.0.0",
+  "private": true,
+  "description": "One-contract-per-event proxy voting on Polygon Amoy with Neon indexing, a Render relayer, Vercel UI, and dApp-triggered MetaMask Snap communications.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20.18.0 <23"
+  },
+  "scripts": {
+    "compile": "npm run build --workspace @pv/contracts",
+    "test:contracts": "npm run test --workspace @pv/contracts",
+    "test:shared": "npm run test --workspace @pv/shared",
+    "test": "npm run test:contracts && npm run test:shared",
+    "build:web": "npm run build --workspace @pv/web",
+    "build:snap": "npm run build --workspace @pv/snap",
+    "build": "npm run compile && npm run build:web && npm run build:snap",
+    "db:migrate": "npm run migrate --workspace @pv/api",
+    "dev:web": "npm run dev --workspace @pv/web",
+    "dev:api": "npm run dev --workspace @pv/api",
+    "dev:indexer": "npm run dev --workspace @pv/indexer",
+    "dev:snap": "npm run dev --workspace @pv/snap",
+    "dev": "concurrently -k -n API,INDEXER,WEB \"npm run dev:api\" \"npm run dev:indexer\" \"npm run dev:web\"",
+    "check:syntax": "node scripts/check-syntax.mjs",
+    "check": "npm run check:syntax && npm run check:structure && npm run test && npm run build:web && npm run build:snap",
+    "snap:origin": "node scripts/configure-snap-origin.mjs",
+    "clean": "npm run clean --workspace @pv/contracts && rm -rf apps/web/dist apps/snap/dist",
+    "check:imports": "node scripts/check-imports.mjs",
+    "snap:configure": "node scripts/configure-snap.mjs",
+    "audit:architecture": "node scripts/audit-project.mjs",
+    "configure:project": "node scripts/configure-project.mjs",
+    "check:structure": "node scripts/validate-structure.mjs"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "@pv/snap",
+  "version": "0.1.0",
+  "description": "Dapp-triggered verified proxy-voting communications inside MetaMask.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/REPLACE_ME/mini-galaxy-pv-v2.git"
+  },
+  "license": "MIT",
+  "main": "./dist/bundle.js",
+  "files": [
+    "dist/",
+    "snap.manifest.json"
+  ],
+  "scripts": {
+    "build": "mm-snap build",
+    "dev": "mm-snap watch",
+    "serve": "mm-snap serve",
+    "manifest": "mm-snap manifest",
+    "prepublishOnly": "mm-snap manifest"
+  },
+  "dependencies": {
+    "@metamask/snaps-sdk": "^6.14.0",
+    "ethers": "^6.17.0"
+  },
+  "devDependencies": {
+    "@metamask/snaps-cli": "^8.4.1",
+    "@types/react": "^18.3.23",
+    "typescript": "~5.8.3"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": "^20 || >=22"
+  }
+}

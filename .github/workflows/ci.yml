@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.18.0
+      - run: npm install --include=dev --no-audit --no-fund
+      - run: npm run check:syntax
+      - run: npm run check:imports
+      - run: npm run audit:architecture
+      - run: npm run compile
+      - run: npm run test
+      - run: npm run build:web
+      - run: npm run build:snap
