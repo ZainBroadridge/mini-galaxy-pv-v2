@@ -112,7 +112,8 @@ async function scanTransferCandidates(token, deploymentBlock, targetBlock, jobId
   let chunkSize = config.transferChunkSize;
   while (next <= targetBlock) {
     const end = Math.min(targetBlock, next + chunkSize - 1);
-    let logs;
+        let logs;
+
     try {
       logs = await archiveProvider.getLogs({
         address: token.token_address,
@@ -121,13 +122,32 @@ async function scanTransferCandidates(token, deploymentBlock, targetBlock, jobId
         toBlock: end,
       });
     } catch (error) {
-      if (chunkSize > 25) {
-        chunkSize = Math.max(25, Math.floor(chunkSize / 2));
+      const rpcMessage =
+        error?.info?.error?.message
+        || error?.error?.message
+        || error?.shortMessage
+        || error?.message
+        || String(error);
+
+      if (chunkSize > 1) {
+        const previousChunkSize = chunkSize;
+        chunkSize = Math.max(1, Math.floor(chunkSize / 2));
+
+        await updateJob(
+          jobId,
+          8,
+          `RPC rejected blocks ${next}-${end}; reducing scan chunk from ${previousChunkSize} to ${chunkSize}`,
+        );
+
+        await new Promise((resolve) => setTimeout(resolve, 500));
         continue;
       }
-      throw error;
-    }
 
+      throw new Error(
+        `Transfer-log RPC request failed for block ${next}: ${rpcMessage}`,
+        { cause: error },
+      );
+    }
     const candidates = new Map();
     for (const log of logs) {
       for (const wallet of [topicAddress(log.topics[1]), topicAddress(log.topics[2])]) {
@@ -157,6 +177,10 @@ async function scanTransferCandidates(token, deploymentBlock, targetBlock, jobId
     const done = end - scanStart + 1;
     await updateJob(jobId, Math.min(55, 10 + Math.floor((done / total) * 45)), `Indexed ERC-20 Transfer logs through block ${end}`);
     next = end + 1;
+
+    // Avoid overwhelming free RPC plans during long historical scans.
+    await new Promise((resolve) => setTimeout(resolve, 250));
+
     if (logs.length < 200 && chunkSize < config.transferChunkSize) {
       chunkSize = Math.min(config.transferChunkSize, chunkSize * 2);
     }
