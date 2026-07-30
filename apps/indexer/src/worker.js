@@ -9,9 +9,43 @@ import { verifyContract } from './verify.js';
 import { indexVoteEvents, reconcileSubmittedVotes } from './event-indexer.js';
 import { errorText, sleep } from './utils.js';
 import { provider, relayer } from './provider.js';
+import http from 'node:http';
 
 let stopping = false;
 const inFlight = new Set();
+
+const port = Number(process.env.PORT || 10000);
+
+const healthServer = http.createServer((request, response) => {
+  if (request.url === '/' || request.url === '/health') {
+    response.writeHead(200, {
+      'Content-Type': 'application/json',
+    });
+
+    response.end(JSON.stringify({
+      ok: true,
+      service: 'pv-v2-indexer',
+      workerId: config.workerId,
+      stopping,
+      activeJobs: inFlight.size,
+      timestamp: new Date().toISOString(),
+    }));
+
+    return;
+  }
+
+  response.writeHead(404, {
+    'Content-Type': 'application/json',
+  });
+
+  response.end(JSON.stringify({
+    error: 'Not found',
+  }));
+});
+
+healthServer.listen(port, '0.0.0.0', () => {
+  logger.info({ port }, 'Indexer health server listening');
+});
 
 async function heartbeat(details = {}) {
   let balance = null;
@@ -147,9 +181,16 @@ async function run() {
 
 async function shutdown(signal) {
   if (stopping) return;
+
   stopping = true;
   logger.info({ signal }, 'Worker shutting down');
+
   await Promise.allSettled([...inFlight]);
+
+  await new Promise((resolve) => {
+    healthServer.close(() => resolve());
+  });
+
   await db.end();
 }
 
