@@ -820,12 +820,35 @@ function ManagePage() {
     return next;
   }, [eventId, wallet.account]);
 
-  useEffect(() => {
-    let active = true;
-    refresh().catch((caught) => active && setError(caught.message));
-    const timer = setInterval(() => refresh().catch(() => {}), 2500);
-    return () => { active = false; clearInterval(timer); };
-  }, [refresh]);
+useEffect(() => {
+  let active = true;
+  let requestInProgress = false;
+
+  const runRefresh = async () => {
+    if (!active || requestInProgress) return;
+
+    requestInProgress = true;
+
+    try {
+      await refresh();
+    } catch (caught) {
+      if (active) {
+        setError(caught.message);
+      }
+    } finally {
+      requestInProgress = false;
+    }
+  };
+
+  runRefresh();
+
+  const timer = setInterval(runRefresh, 10_000);
+
+  return () => {
+    active = false;
+    clearInterval(timer);
+  };
+}, [refresh]);
 
   const retrySnapshot = async () => {
     setBusy('snapshot');
